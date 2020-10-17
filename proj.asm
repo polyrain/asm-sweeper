@@ -19,6 +19,7 @@ start:
     call print
     call print_board
     call fill_x_arr
+    call fill_y_arr
     mov rsi, greeting
     mov rdx, 23
     call print
@@ -42,11 +43,9 @@ rand_num: ; Checks # of cycles since you last restarted your computer
 
 
 fill_y_arr:
-
-fill_x_arr:
-    lea rsi, [rel minex] ; needed for 64 bit on mac
+    lea rsi, [rel miney] ; needed for 64 bit on mac
     xor rcx, rcx ; make this 0
-    arrayloop:
+    array_y:
         call rand_num
         mov [rsi+rcx*8], eax ; array element rcx updated with value
         mov rbx, [rsi + rcx*8] ; grab value at index we just filled
@@ -57,7 +56,24 @@ fill_x_arr:
         call printNum ; print
         inc rcx ; we don't need this anymore
         cmp rcx, 10
-        jne arrayloop
+        jne array_y
+    ret
+
+fill_x_arr:
+    lea rsi, [rel minex] ; needed for 64 bit on mac
+    xor rcx, rcx ; make this 0
+    array_x:
+        call rand_num
+        mov [rsi+rcx*8], eax ; array element rcx updated with value
+        mov rbx, [rsi + rcx*8] ; grab value at index we just filled
+        
+        add rbx, 48 ; now offset number by 48 to make it ascii'able
+        mov [rsi+rcx*8], rbx ; overwritten the value we saw as it's ascii
+        mov [rel num], rbx ; update storage var
+        call printNum ; print
+        inc rcx ; we don't need this anymore
+        cmp rcx, 10
+        jne array_x
     ret
 
 printNum:
