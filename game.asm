@@ -75,3 +75,10 @@ getName:
     mov rdx, 37
     syscall
  ret
+
+
+ randNum:
+    rdtsc
+    and eax, 0xFF
+    ret
+
