@@ -67,6 +67,8 @@ print:
     ret
 
 getName:
+    mov rdi, 0x0000 
+    mov [rel name],rdi
     mov rax, 0x02000003 ; read
     mov rdi, 0
     mov rsi, name
