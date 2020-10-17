@@ -3,8 +3,8 @@ border: db "+----------+"
 side: db "+"
 greeting: db "Welcome to Minesweeper", 10
 newln: db 10
-evenMsg: db "Even"
-oddMsg: db "Odd"
+evenMsg: db "Even",10
+oddMsg: db "Odd",10
 num db 0
 
 section .bss
@@ -19,6 +19,9 @@ start:
     call print
     call print_board
     call fill_x_arr
+    mov rsi, newln
+    mov rdx, 1
+    call print
     call fill_y_arr
     mov rsi, greeting
     mov rdx, 23
@@ -41,19 +44,30 @@ rand_num: ; Checks # of cycles since you last restarted your computer
     jg rand_num
     ret ; eax now has our final rand num
 
+check_odd:
+    call rand_num
+    test rcx, 1
+    jnz odd
+    add eax, 0
+    ret
+    odd:
+    add eax, 1
+    ret
+    
 
 fill_y_arr:
     lea rsi, [rel miney] ; needed for 64 bit on mac
     xor rcx, rcx ; make this 0
     array_y:
-        call rand_num
+        
+        call check_odd
         mov [rsi+rcx*8], eax ; array element rcx updated with value
         mov rbx, [rsi + rcx*8] ; grab value at index we just filled
-        
+            
         add rbx, 48 ; now offset number by 48 to make it ascii'able
         mov [rsi+rcx*8], rbx ; overwritten the value we saw as it's ascii
         mov [rel num], rbx ; update storage var
-        call printNum ; print
+        ;call printNum ; print
         inc rcx ; we don't need this anymore
         cmp rcx, 10
         jne array_y
@@ -63,14 +77,14 @@ fill_x_arr:
     lea rsi, [rel minex] ; needed for 64 bit on mac
     xor rcx, rcx ; make this 0
     array_x:
-        call rand_num
+        call check_odd
         mov [rsi+rcx*8], eax ; array element rcx updated with value
         mov rbx, [rsi + rcx*8] ; grab value at index we just filled
         
         add rbx, 48 ; now offset number by 48 to make it ascii'able
         mov [rsi+rcx*8], rbx ; overwritten the value we saw as it's ascii
         mov [rel num], rbx ; update storage var
-        call printNum ; print
+        ;call printNum ; print
         inc rcx ; we don't need this anymore
         cmp rcx, 10
         jne array_x
