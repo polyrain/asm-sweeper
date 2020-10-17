@@ -1,6 +1,10 @@
 section .data
 border: db "+----------+"
 side: db "+"
+mine: db "X"
+unknown: db "?"
+safe: db "O"
+
 greeting: db "Welcome to Minesweeper", 10
 newln: db 10
 evenMsg: db "Even",10
@@ -26,11 +30,35 @@ start:
     mov rsi, greeting
     mov rdx, 23
     call print
+    mov rsi, newln
+    mov rdx, 1
+    call print
+    call check_board
     mov rax, 0x02000001
     mov rdi, 0
     syscall
 
+check_board:
+    lea r12, [rel minex]
+    lea r13, [rel miney]
+    xor rcx, rcx
 
+    board_loop:
+        mov rbx, [r12+rcx*8]
+        mov [rel num], rbx
+        call printNum
+        mov rbx, [r13+rcx*8]
+        mov [rel num], rbx
+        call printNum
+        push rcx
+        mov rsi, newln
+        mov rdx, 1
+        call print
+        pop rcx
+        inc rcx
+        cmp rcx, 10
+        jne board_loop
+    ret
 print: ; Print function; put your text to print on stack first
     mov rax, 0x02000004
     mov rdi, 1
