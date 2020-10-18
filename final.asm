@@ -20,6 +20,7 @@ section .data ; Constants in memory; think of this like #define in C
 
  red: db `\u001b[31m`,0 ; ANSI Fore Red code
  green: db `\u001b[32m`,0 ; ANSI Fore Green code
+ ; position:  db `\033[X;YH` ; Not used, but you can use this (replace X and Y) to control where on terminal to print!
 reset: db `\u001b[0m`,0 ; ANSI reset
 border: db "+----------+"
 num db 0 ; Intermediate storage number for math
